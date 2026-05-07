@@ -13,7 +13,7 @@ export default function HomePage() {
       <div>
         <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-mint">Painel financeiro</p>
         <h2 className="max-w-xl text-4xl font-bold leading-tight text-ink sm:text-5xl">
-          Registre entradas, controle saidas e acompanhe seu caixa.
+          Vamos pensar em nosso futuro.
         </h2>
       </div>
 
