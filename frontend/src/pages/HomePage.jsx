@@ -11,9 +11,9 @@ export default function HomePage() {
   return (
     <section className="grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-center">
       <div>
-        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-mint">Painel financeiro</p>
+        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-mint"> </p>
         <h2 className="max-w-xl text-4xl font-bold leading-tight text-ink sm:text-5xl">
-          Vamos pensar em nosso futuro.
+          Ao infinito, e além!.
         </h2>
       </div>
 

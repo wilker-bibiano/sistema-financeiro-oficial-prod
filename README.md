@@ -98,3 +98,59 @@ DELETE /categorias/:nome
   "observacao": "Pagamento mensal"
 }
 ```
+
+## Aplicativo mobile (.NET MAUI)
+
+A versao mobile fica em:
+
+```txt
+mobile/FinanceiroMobile
+```
+
+Ela usa a mesma arquitetura da versao web:
+
+```txt
+App MAUI -> Backend no Render -> Google Sheets
+```
+
+A chave do Google Sheets continua somente no backend. O aplicativo mobile chama apenas a API publica do Render.
+
+### Configurar a URL do Render
+
+Abra o arquivo:
+
+```txt
+mobile/FinanceiroMobile/Services/ApiConfig.cs
+```
+
+Troque:
+
+```csharp
+public const string BaseUrl = "https://COLE-SUA-URL-DO-RENDER.onrender.com";
+```
+
+pela URL real do seu backend no Render, sem barra no final. Exemplo:
+
+```csharp
+public const string BaseUrl = "https://meu-financeiro-api.onrender.com";
+```
+
+### Rodar pelo Visual Studio
+
+1. Abra o arquivo `mobile/FinanceiroMobile/FinanceiroMobile.csproj` no Visual Studio.
+2. Escolha o alvo de execucao:
+   - Windows Machine para testar no PC.
+   - Android Emulator para testar no emulador.
+   - Um celular Android conectado por USB para testar no aparelho.
+3. Clique em Run.
+
+### Rodar pelo terminal
+
+Para compilar a versao Windows:
+
+```powershell
+cd mobile/FinanceiroMobile
+dotnet build -f net10.0-windows10.0.19041.0
+```
+
+Para Android, use o Visual Studio com emulador ou aparelho conectado. O app vai usar a URL publica do Render, entao funciona fora do PC desde que o backend esteja online.
