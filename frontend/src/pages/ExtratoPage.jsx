@@ -15,7 +15,9 @@ export default function ExtratoPage() {
   useEffect(() => {
     async function carregarLancamentos() {
       try {
-        setLancamentos(await listarLancamentos());
+        const dados = await listarLancamentos();
+        const lancamentosAtivos = dados.filter((item) => !item.ativo !== false);
+        setLancamentos(lancamentosAtivos);
       } catch {
         setToast({ message: "Nao foi possivel carregar o extrato.", type: "error" });
       }
