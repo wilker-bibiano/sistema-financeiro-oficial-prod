@@ -16,7 +16,7 @@ export default function ExtratoPage() {
     async function carregarLancamentos() {
       try {
         const dados = await listarLancamentos();
-        const lancamentosAtivos = dados.filter((item) => !item.ativo !== false);
+        const lancamentosAtivos = dados.filter((item) => item.ativo !== false);
         setLancamentos(lancamentosAtivos);
       } catch {
         setToast({ message: "Nao foi possivel carregar o extrato.", type: "error" });
