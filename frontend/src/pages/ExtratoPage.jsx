@@ -94,6 +94,19 @@ export default function ExtratoPage() {
                       <td className="py-3 pr-4 text-ink/65">{item.observacao || "-"}</td>
                       <td className={`py-3 text-right font-semibold ${item.tipo === "receita" ? "text-mint" : "text-coral"}`}>
                         {currency.format(item.valor)}
+
+
+
+<td className="py-3 text-center">
+      <button
+        onClick={() => handleDeletar(item.id)}
+        className="rounded bg-coral/10 px-3 py-1 text-xs font-semibold text-coral transition hover:bg-coral hover:text-white"
+      >
+        Excluir
+      </button>
+    </td>
+
+
                       </td>
                     </tr>
                   ))
