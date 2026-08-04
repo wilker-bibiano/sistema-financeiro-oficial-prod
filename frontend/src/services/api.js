@@ -27,3 +27,9 @@ export async function criarLancamento(payload) {
   const { data } = await api.post("/lancamentos", payload);
   return data;
 }
+
+
+export async function deletarLancamento(id) {
+  await api.delete(`/lancamentos/${id}`);
+}
+
