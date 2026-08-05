@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { listarLancamentos } from "../services/api.js";
+import { listarLancamentos, deletarLancamento } from "../services/api.js";
 import Toast from "../components/Toast.jsx";
 
 const currency = new Intl.NumberFormat("pt-BR", {
@@ -26,7 +26,8 @@ export default function ExtratoPage() {
     carregarLancamentos();
   }, []);
 
-  async function deletar(id) {
+  // 👇 CERTIFIQUE-SE DE QUE ESTA FUNÇÃO ESTÁ AQUI DENTRO:
+  async function handleDeletar(id) {
     try {
       await deletarLancamento(id);
       setLancamentos(lancamentos.filter((item) => item.id !== id));
@@ -35,6 +36,7 @@ export default function ExtratoPage() {
       setToast({ message: "Erro ao excluir o lançamento.", type: "error" });
     }
   }
+
   const totais = useMemo(() => {
     return lancamentos.reduce(
       (acc, item) => {
@@ -47,7 +49,10 @@ export default function ExtratoPage() {
     );
   }, [lancamentos]);
 
-  const filtrados = filter === "todos" ? lancamentos : lancamentos.filter((item) => item.tipo === filter);
+  const filtrados = (filter === "todos" 
+    ? lancamentos 
+    : lancamentos.filter((item) => item.tipo === filter)
+  ).filter((item) => item.ativo !== false);
 
   return (
     <>
