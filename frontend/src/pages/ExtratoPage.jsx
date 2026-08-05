@@ -26,6 +26,15 @@ export default function ExtratoPage() {
     carregarLancamentos();
   }, []);
 
+  async function deletar(id) {
+    try {
+      await deletarLancamento(id);
+      setLancamentos(lancamentos.filter((item) => item.id !== id));
+      setToast({ message: "Lançamento removido com sucesso!", type: "success" });
+    } catch {
+      setToast({ message: "Erro ao excluir o lançamento.", type: "error" });
+    }
+  }
   const totais = useMemo(() => {
     return lancamentos.reduce(
       (acc, item) => {
@@ -99,7 +108,7 @@ export default function ExtratoPage() {
 
 <td className="py-3 text-center">
       <button
-        onClick={() => handleDeletar(item.id)}
+        onClick={() => deletar(item.id)}
         className="rounded bg-coral/10 px-3 py-1 text-xs font-semibold text-coral transition hover:bg-coral hover:text-white"
       >
         Excluir
