@@ -27,7 +27,7 @@ export default function ExtratoPage() {
   }, []);
 
   // 👇 CERTIFIQUE-SE DE QUE ESTA FUNÇÃO ESTÁ AQUI DENTRO:
-  async function handleDeletar(id) {
+  async function deletar(id) {
     try {
       await deletarLancamento(id);
       setLancamentos(lancamentos.filter((item) => item.id !== id));
