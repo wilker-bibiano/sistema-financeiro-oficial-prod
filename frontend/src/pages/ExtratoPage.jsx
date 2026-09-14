@@ -86,7 +86,7 @@ export default function ExtratoPage() {
               <thead>
                 <tr className="border-b border-ink/10 text-sm text-ink/60">
                   <th className="py-3 pr-4 font-semibold">Data</th>
-                  <th className="py-3 pr-4 font-semibold">Tipo</th>
+                  <th className="py-3 pr-4 font-semibold">Operação</th>
                   <th className="py-3 pr-4 font-semibold">Categoria</th>
                   <th className="py-3 pr-4 font-semibold">Observacao</th>
                   <th className="py-3 text-right font-semibold">Valor</th>
@@ -96,17 +96,17 @@ export default function ExtratoPage() {
                 {filtrados.length === 0 ? (
                   <tr>
                     <td className="py-8 text-center text-ink/55" colSpan="5">
-                      Nenhum lancamento encontrado.
+                      Estamos iniciando o servidor, por favor aguarde...
                     </td>
                   </tr>
                 ) : (
                   filtrados.map((item) => (
                     <tr key={item.id} className="border-b border-ink/5 text-sm">
                       <td className="py-3 pr-4">{new Date(item.data).toLocaleDateString("pt-BR")}</td>
-                      <td className="py-3 pr-4 capitalize">{item.tipo}</td>
+                      <td className="py-3 pr-4 capitalize">{item.operacao}</td>
                       <td className="py-3 pr-4">{item.categoria}</td>
                       <td className="py-3 pr-4 text-ink/65">{item.observacao || "-"}</td>
-                      <td className={`py-3 text-right font-semibold ${item.tipo === "receita" ? "text-mint" : "text-coral"}`}>
+                      <td className={`py-3 text-right font-semibold ${item.operacao === "receita" ? "text-mint" : "text-coral"}`}>
                         {currency.format(item.valor)}
 
 
