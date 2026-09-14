@@ -1,17 +1,19 @@
 import { Save } from "lucide-react";
 import { useState } from "react";
+import Toast from "./Toast.jsx";
 
   
 export default function LancamentoForm({ categorias = [], operacoes = [], onSave, loading }) {
   
 const [form, setForm] = useState({ valor: "", operacao: "", categoria: "", observacao: "" });
   const [errors, setErrors] = useState({});
-
+  const [toast, setToast] = useState(null);
   const isReceita = form.operacao?.toLowerCase().trim() === "receita";
 
   function updateField(field, value) {
     setForm((current) => ({ ...current, [field]: value }));
   }
+   
 
   function validate() {
     const nextErrors = {};
@@ -25,20 +27,31 @@ const [form, setForm] = useState({ valor: "", operacao: "", categoria: "", obser
 
   async function handleSubmit(event) {
     event.preventDefault();
-    if (!validate()) return;
+   if (!validate()) {
+      setToast({ message: "Preencha todos os campos obrigatórios.", type: "error" });
+      return;
+    }
+try {
+      await onSave({
+        valor: Number(form.valor),
+        operacao: form.operacao.toLowerCase().trim(),
+        categoria: form.categoria,
+        observacao: form.observacao
+      });
 
-    await onSave({
-      valor: Number(form.valor),
-      operacao: form.operacao.toLowerCase().trim(),
-      categoria: form.categoria,
-      observacao: form.observacao
-    });
+      setForm({ valor: "", operacao: "", categoria: "", observacao: "" });
+      setErrors({});
 
-    setForm({ valor: "", operacao: "", categoria: "", observacao: "" });
-    setErrors({});
+      setToast({ message: "Lançamento salvo com sucesso!", type: "success" });
+
+    } catch {
+      setToast({ message: "Erro ao conectar ao servidor. Tente novamente.", type: "error" });
+    }
   }
 
   return (
+    <>
+    <Toast message={toast?.message} type={toast?.type} />
     <form onSubmit={handleSubmit} className="rounded-lg bg-white p-5 shadow-soft">
       <div className="mb-5">
         <p className={`text-sm font-semibold ${isReceita ? "text-receita" : "text-despesa"}`}>
@@ -131,5 +144,6 @@ const [form, setForm] = useState({ valor: "", operacao: "", categoria: "", obser
         {loading ? "Acionando o Servidor, por favor aguarde..." : "Salvar"}
       </button>
     </form>
+    </>
   );
 }
