@@ -15,7 +15,7 @@ export default function TransactionManager({ operacoes, onAdd, onRemove, loading
     <section className="rounded-lg bg-white p-5 shadow-soft">
       <div className="mb-4">
         <h2 className="text-lg font-semibold text-ink">Operações</h2>
-        <p className="text-sm text-ink/60">Adicione ou remova opcoes do dropdown.</p>
+        <p className="text-sm text-ink/60"> Adicione ou remova opcoes do dropdown.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="mb-4 flex gap-2">

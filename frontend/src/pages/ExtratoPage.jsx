@@ -19,7 +19,7 @@ export default function ExtratoPage() {
         const lancamentosAtivos = dados.filter((item) => item.ativo !== false);
         setLancamentos(lancamentosAtivos);
       } catch {
-        setToast({ message: "Nao foi possivel carregar o extrato.", type: "error" });
+        setToast({ message: "O servidor está iniciando, Aguarde.. ", type: "error" });
       }
     }
 
@@ -95,7 +95,7 @@ export default function ExtratoPage() {
               <tbody>
                 {filtrados.length === 0 ? (
                   <tr>
-                    <td className="py-8 text-center text-ink/55" colSpan="5">
+                    <td className="py-8 text-center text-ink/55 text-color=receita" colSpan="5" >
                       Estamos iniciando o servidor, por favor aguarde...
                     </td>
                   </tr>
