@@ -60,20 +60,20 @@ export default function ExtratoPage() {
       <section className="grid gap-6">
         <div className="grid gap-4 md:grid-cols-3">
           <SummaryCard label="Caixa" value={totais.caixa} tone="ink" />
-          <SummaryCard label="Total receitas" value={totais.receitas} tone="mint" />
-          <SummaryCard label="Total despesas" value={totais.despesas} tone="coral" />
+          <SummaryCard label="Total receitas" value={totais.receitas} tone="receita" />
+          <SummaryCard label="Total despesas" value={totais.despesas} tone="despesa" />
         </div>
 
         <div className="rounded-lg bg-white p-5 shadow-soft">
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-semibold text-mint">Movimentacoes</p>
+              <p className="text-sm font-semibold text-receita">Movimentacoes</p>
               <h2 className="text-2xl font-semibold text-ink">Extrato</h2>
             </div>
             <select
               value={filter}
               onChange={(event) => setFilter(event.target.value)}
-              className="rounded-lg border border-ink/10 bg-white px-3 py-2 outline-none transition focus:border-mint focus:ring-2 focus:ring-mint/20"
+              className="rounded-lg border border-ink/10 bg-white px-3 py-2 outline-none transition focus:border-receita focus:ring-2 focus:ring-receita/20"
             >
               <option value="todos">Todos</option>
               <option value="receita">Receitas</option>
@@ -106,7 +106,7 @@ export default function ExtratoPage() {
                       <td className="py-3 pr-4 capitalize">{item.operacao}</td>
                       <td className="py-3 pr-4">{item.categoria}</td>
                       <td className="py-3 pr-4 text-ink/65">{item.observacao || "-"}</td>
-                      <td className={`py-3 text-right font-semibold ${item.operacao === "receita" ? "text-mint" : "text-coral"}`}>
+                      <td className={`py-3 text-right font-semibold ${item.operacao === "receita" ? "text-receita" : "text-despesa"}`}>
                         {currency.format(item.valor)}
 
 
@@ -114,7 +114,7 @@ export default function ExtratoPage() {
 <td className="py-3 text-center">
       <button
         onClick={() => deletar(item.id)}
-        className="rounded bg-coral/10 px-3 py-1 text-xs font-semibold text-coral transition hover:bg-coral hover:text-white"
+        className="rounded bg-despesa/10 px-3 py-1 text-xs font-semibold text-despesa transition hover:bg-despesa hover:text-white"
       >
         Excluir
       </button>
@@ -137,8 +137,8 @@ export default function ExtratoPage() {
 function SummaryCard({ label, value, tone }) {
   const color = {
     ink: "text-ink",
-    mint: "text-mint",
-    coral: "text-coral"
+    receita: "text-receita",
+    despesa: "text-despesa"
   }[tone];
 
   return (
