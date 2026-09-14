@@ -128,7 +128,7 @@ const [form, setForm] = useState({ valor: "", operacao: "", categoria: "", obser
         }`}
       >
         <Save size={18} />
-        {loading ? "Salvando..." : "Salvar"}
+        {loading ? "Acionando o Servidor, por favor aguarde..." : "Salvar"}
       </button>
     </form>
   );
