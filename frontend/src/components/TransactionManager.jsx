@@ -1,7 +1,7 @@
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
-export default function CategoryManager({ categorias, onAdd, onRemove, loading }) {
+export default function TransactionManager({ operacoes, onAdd, onRemove, loading }) {
   const [nome, setNome] = useState("");
 
   async function handleSubmit(event) {
@@ -14,7 +14,7 @@ export default function CategoryManager({ categorias, onAdd, onRemove, loading }
   return (
     <section className="rounded-lg bg-white p-5 shadow-soft">
       <div className="mb-4">
-        <h2 className="text-lg font-semibold text-ink">Categorias</h2>
+        <h2 className="text-lg font-semibold text-ink">Operações</h2>
         <p className="text-sm text-ink/60">Adicione ou remova opcoes do dropdown.</p>
       </div>
 
@@ -23,34 +23,35 @@ export default function CategoryManager({ categorias, onAdd, onRemove, loading }
           value={nome}
           onChange={(event) => setNome(event.target.value)}
           className="min-w-0 flex-1 rounded-lg border border-ink/10 px-3 py-2 outline-none transition focus:border-receita focus:ring-2 focus:ring-receita/20"
-          placeholder="Ex.: Mercado"
+          placeholder="Tipo de operação"
           disabled={loading}
         />
         <button
           type="submit"
           className="grid h-10 w-10 place-items-center rounded-lg bg-ink text-white transition hover:bg-ink/90 disabled:opacity-50"
           disabled={loading || !nome.trim()}
-          title="Adicionar categoria"
+          title="Adicionar operação"
         >
           <Plus size={18} />
         </button>
       </form>
 
+
       <div className="flex flex-wrap gap-2">
-        {categorias.length === 0 ? (
-          <p className="text-sm text-ink/55">Nenhuma categoria cadastrada.</p>
+        {operacoes.length === 0 ? (
+          <p className="text-sm text-ink/55">Nenhuma operação cadastrada.</p>
         ) : (
-          categorias.map((categoria) => (
+          operacoes.map((operacao) => (
             <span
-              key={categoria.nome}
+              key={operacao.nome}
               className="inline-flex items-center gap-2 rounded-lg bg-paper px-3 py-2 text-sm font-medium text-ink"
             >
-              {categoria.nome}
+              {operacao.nome}
               <button
                 type="button"
-                onClick={() => onRemove(categoria.nome)}
+                onClick={() => onRemove(operacao.nome)}
                 className="text-despesa transition hover:text-despesa/75"
-                title={`Remover ${categoria.nome}`}
+                title={`Remover ${operacao.nome}`}
                 disabled={loading}
               >
                 <Trash2 size={15} />

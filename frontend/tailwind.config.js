@@ -5,8 +5,8 @@ export default {
     extend: {
       colors: {
         ink: "#17211f",
-        mint: "#3b8b72",
-        coral: "#d95f4f",
+        receita: "#3b8b72",
+        despesa: "#d95f4f",
         paper: "#f8faf7"
       },
       boxShadow: {

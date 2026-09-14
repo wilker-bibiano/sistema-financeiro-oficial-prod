@@ -4,10 +4,12 @@ import HomePage from "./pages/HomePage.jsx";
 import LancamentoPage from "./pages/LancamentoPage.jsx";
 import ExtratoPage from "./pages/ExtratoPage.jsx";
 
+// Navegação superior da tela
 const navItems = [
-  { to: "/", label: "Inicio", icon: Home },
-  { to: "/receitas", label: "Receitas", icon: Banknote },
-  { to: "/despesas", label: "Despesas", icon: ReceiptText },
+  // { to: "/", label: "Inicio", icon: Home },
+  // { to: "/receitas", label: "Receitas", icon: Banknote },
+  // { to: "/despesas", label: "Despesas", icon: ReceiptText },
+  {to: "/", label: "Lancamentos", icon: Banknote },
   { to: "/extrato", label: "Extrato", icon: ArrowLeftRight }
 ];
 
@@ -21,7 +23,7 @@ export default function App() {
               <WalletCards size={22} />
             </div>
             <div>
-              <p className="text-sm font-medium text-mint">Controle pessoal</p>
+              <p className="text-sm font-medium text-receita">Controle pessoal</p>
               <h1 className="text-xl font-semibold text-ink">Financas em dia</h1>
             </div>
           </div>
@@ -46,9 +48,10 @@ export default function App() {
 
         <main className="flex-1">
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/receitas" element={<LancamentoPage tipo="receita" />} />
-            <Route path="/despesas" element={<LancamentoPage tipo="despesa" />} />
+            {/* <Route path="/" element={<HomePage />} /> */}
+               <Route path="/" element={<LancamentoPage />} />
+            {/* <Route path="/receitas" element={<LancamentoPage  />} /> */}
+            {/* <Route path="/despesas" element={<LancamentoPage tipo="despesa" />} /> */}
             <Route path="/extrato" element={<ExtratoPage />} />
           </Routes>
         </main>

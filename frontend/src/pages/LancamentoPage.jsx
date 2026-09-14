@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import CategoryManager from "../components/CategoryManager.jsx";
+import TransactionManager from "../components/TransactionManager.jsx";
 import LancamentoForm from "../components/LancamentoForm.jsx";
 import Toast from "../components/Toast.jsx";
 import { criarCategoria, criarLancamento, listarCategorias, removerCategoria } from "../services/api.js";
 
-export default function LancamentoPage({ tipo }) {
+// export default function LancamentoPage({ tipo }) {
+export default function LancamentoPage() {
   const [categorias, setCategorias] = useState([]);
+  const [operacoes, setOperacoes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
 
   useEffect(() => {
     carregarCategorias();
+    carregarOperacoes();
   }, []);
 
   function showToast(message, type = "success") {
@@ -21,7 +25,9 @@ export default function LancamentoPage({ tipo }) {
   async function carregarCategorias() {
     try {
       setLoading(true);
-      setCategorias(await listarCategorias());
+      // setCategorias(await listarCategorias());
+      const dados = await listarCategorias();
+      setCategorias(Array.isArray(dados) ? dados : []);
     } catch {
       showToast("Nao foi possivel carregar as categorias.", "error");
     } finally {
@@ -29,10 +35,17 @@ export default function LancamentoPage({ tipo }) {
     }
   }
 
+  // Carrega as operações do dropdown 
+    function carregarOperacoes() { 
+      setOperacoes([{ nome: "receita" }, { nome: "despesa" }]);
+
+  }
+
   async function handleSave(payload) {
     try {
       setLoading(true);
       await criarLancamento(payload);
+      await carregarCategorias();
       showToast("Lancamento salvo com sucesso.");
     } catch (error) {
       showToast(error.response?.data?.message || "Erro ao salvar lancamento.", "error");
@@ -54,6 +67,8 @@ export default function LancamentoPage({ tipo }) {
     }
   }
 
+  
+
   async function handleRemoveCategoria(nome) {
     try {
       setLoading(true);
@@ -70,9 +85,10 @@ export default function LancamentoPage({ tipo }) {
   return (
     <>
       <Toast message={toast?.message} type={toast?.type} />
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <LancamentoForm tipo={tipo} categorias={categorias} onSave={handleSave} loading={loading} />
+      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">      
+        <LancamentoForm categorias={categorias} operacoes={operacoes} onSave={handleSave} loading={loading} />
         <CategoryManager categorias={categorias} onAdd={handleAddCategoria} onRemove={handleRemoveCategoria} loading={loading} />
+     
       </div>
     </>
   );
