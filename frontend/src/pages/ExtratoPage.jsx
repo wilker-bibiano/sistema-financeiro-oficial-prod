@@ -40,8 +40,8 @@ export default function ExtratoPage() {
   const totais = useMemo(() => {
     return lancamentos.reduce(
       (acc, item) => {
-        if (item.tipo === "receita") acc.receitas += item.valor;
-        if (item.tipo === "despesa") acc.despesas += item.valor;
+        if (item.operacao === "receita") acc.receitas += item.valor;
+        if (item.operacao === "despesa") acc.despesas += item.valor;
         acc.caixa = acc.receitas - acc.despesas;
         return acc;
       },
@@ -51,7 +51,7 @@ export default function ExtratoPage() {
 
   const filtrados = (filter === "todos" 
     ? lancamentos 
-    : lancamentos.filter((item) => item.tipo === filter)
+    : lancamentos.filter((item) => item.operacao === filter)
   ).filter((item) => item.ativo !== false);
 
   return (
