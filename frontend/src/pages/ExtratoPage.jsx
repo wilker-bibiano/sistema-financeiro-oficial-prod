@@ -107,21 +107,12 @@ export default function ExtratoPage() {
                       <td className="py-3 pr-4">{item.categoria}</td>
                       <td className="py-3 pr-4 text-ink/65">{item.observacao || "-"}</td>
                       <td className={`py-3 text-right font-semibold ${item.operacao === "receita" ? "text-receita" : "text-despesa"}`}>
-                        {currency.format(item.valor)}
-
-
-
-<td className="py-3 text-center">
-      <button
-        onClick={() => deletar(item.id)}
-        className="rounded bg-despesa/10 px-3 py-1 text-xs font-semibold text-despesa transition hover:bg-despesa hover:text-white"
-      >
-        Excluir
-      </button>
-    </td>
-
-
-                      </td>
+                        {currency.format(item.valor)}</td>
+                        <td className="py-3 text-center">
+                          <button onClick={() => deletar(item.id)} className="rounded bg-despesa/10 px-3 py-1 text-xs font-semibold text-despesa transition hover:bg-despesa hover:text-white">
+                            Excluir
+                          </button>
+                        </td>
                     </tr>
                   ))
                 )}
