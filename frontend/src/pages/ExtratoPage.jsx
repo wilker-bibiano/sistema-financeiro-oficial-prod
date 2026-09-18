@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { listarLancamentos, deletarLancamento, editarLancamento  } from "../services/api.js";
 import Toast from "../components/Toast.jsx";
+import ModalEditarExtrato from "../components/ModalExtrato.jsx";
 
 const currency = new Intl.NumberFormat("pt-BR", {
   style: "currency",
@@ -11,6 +12,8 @@ export default function ExtratoPage() {
   const [lancamentos, setLancamentos] = useState([]);
   const [filter, setFilter] = useState("todos");
   const [toast, setToast] = useState(null);
+  const [itemEmEdicao, setItemEmEdicao] = useState(null);
+  
 
   useEffect(() => {
     async function carregarLancamentos() {
@@ -46,7 +49,13 @@ export default function ExtratoPage() {
       setToast({ message: "Erro ao atualizar o lançamento.", type: "error" });
     }
   }
+  
+  // async function salvarEdicao(dadosDosCampos) {
+  //   await editar(itemEmEdicao.id, dadosDosCampos);
+  //   setItemEmEdicao(null);
+  // }
 
+  
   const totais = useMemo(() => {
     return lancamentos.reduce(
       (acc, item) => {
@@ -58,7 +67,8 @@ export default function ExtratoPage() {
       { caixa: 0, receitas: 0, despesas: 0 }
     );
   }, [lancamentos]);
-
+  
+  
   const filtrados = (filter === "todos" 
     ? lancamentos 
     : lancamentos.filter((item) => item.operacao === filter)
@@ -67,6 +77,18 @@ export default function ExtratoPage() {
   return (
     <>
       <Toast message={toast?.message} type={toast?.type} />
+
+      <ModalEditarExtrato
+        isOpen={Boolean(itemEmEdicao)}
+        item={itemEmEdicao}
+        onClose={() => setItemEmEdicao(null)}
+        onSave={async (id, payload) => {
+          await editar(id, payload);
+          setItemEmEdicao(null);
+        }}       
+      />      
+
+
       <section className="grid gap-6">
         <div className="grid gap-4 md:grid-cols-3">
           <SummaryCard label="Caixa" value={totais.caixa} tone="ink" />
@@ -100,12 +122,13 @@ export default function ExtratoPage() {
                   <th className="py-3 pr-4 font-semibold">Categoria</th>
                   <th className="py-3 pr-4 font-semibold">Observacao</th>
                   <th className="py-3 text-right font-semibold">Valor</th>
+                  <th className="py-3 text-center font-semibold" colSpan="2">Ações</th>
                 </tr>
               </thead>
               <tbody>
                 {filtrados.length === 0 ? (
                   <tr>
-                    <td className="py-8 text-center text-ink/55 text-color=receita" colSpan="5" >
+                    <td className="py-8 text-center text-ink/55 " colSpan="6" >
                       Estamos iniciando o servidor, por favor aguarde...
                     </td>
                   </tr>
@@ -121,7 +144,7 @@ export default function ExtratoPage() {
                         {currency.format(item.valor)}
                       </td>
                       <td className="py-3 text-center">
-                        <button onClick={() => editar(item.id)} className="rounded bg-receita/10 px-3 py-1 text-xs font-semibold text-receita transition hover:bg-receita hover:text-white">
+                        <button onClick={() => setItemEmEdicao(item)} className="rounded bg-receita/10 px-3 py-1 text-xs font-semibold text-receita transition hover:bg-receita hover:text-white">
                           Editar
                         </button>           
 
@@ -136,7 +159,7 @@ export default function ExtratoPage() {
                           </button>
                         </td> */}
 
-                    </tr>
+                    </tr>                    
                   ))
                 )}
               </tbody>
