@@ -33,3 +33,7 @@ export async function deletarLancamento(id) {
   await api.delete(`/lancamentos/${id}`);
 }
 
+export async function editarLancamento(id, payload) {
+  const { data } = await api.PATCH(`/lancamentos/${id}`, payload);
+  return data;
+}

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { listarLancamentos, deletarLancamento } from "../services/api.js";
+import { listarLancamentos, deletarLancamento, editarLancamento  } from "../services/api.js";
 import Toast from "../components/Toast.jsx";
 
 const currency = new Intl.NumberFormat("pt-BR", {
@@ -26,7 +26,7 @@ export default function ExtratoPage() {
     carregarLancamentos();
   }, []);
 
-  // 👇 CERTIFIQUE-SE DE QUE ESTA FUNÇÃO ESTÁ AQUI DENTRO:
+ 
   async function deletar(id) {
     try {
       await deletarLancamento(id);
@@ -34,6 +34,16 @@ export default function ExtratoPage() {
       setToast({ message: "Lançamento removido com sucesso!", type: "success" });
     } catch {
       setToast({ message: "Erro ao excluir o lançamento.", type: "error" });
+    }
+  }
+
+ async function editar(id, payload) {
+    try {
+      const dadosAtualizados = await editarLancamento(id, payload);
+      setLancamentos(lancamentos.map((item) => (item.id === id ? { ...item, ...dadosAtualizados } : item)));
+      setToast({ message: "Lançamento atualizado com sucesso!", type: "success" });
+    } catch {
+      setToast({ message: "Erro ao atualizar o lançamento.", type: "error" });
     }
   }
 
@@ -106,13 +116,26 @@ export default function ExtratoPage() {
                       <td className="py-3 pr-4 capitalize">{item.operacao}</td>
                       <td className="py-3 pr-4">{item.categoria}</td>
                       <td className="py-3 pr-4 text-ink/65">{item.observacao || "-"}</td>
-                      <td className={`py-3 text-right font-semibold ${item.operacao === "receita" ? "text-receita" : "text-despesa"}`}>
-                        {currency.format(item.valor)}</td>
-                        <td className="py-3 text-center">
+                      <td className={`py-3 text-right font-semibold 
+                        ${item.operacao === "receita" ? "text-receita" : "text-despesa"}`}>
+                        {currency.format(item.valor)}
+                      </td>
+                      <td className="py-3 text-center">
+                        <button onClick={() => editar(item.id)} className="rounded bg-receita/10 px-3 py-1 text-xs font-semibold text-receita transition hover:bg-receita hover:text-white">
+                          Editar
+                        </button>           
+
+                          <button onClick={() => deletar(item.id)} className="rounded bg-despesa/10 px-3 py-1 text-xs font-semibold text-despesa transition hover:bg-despesa hover:text-white">
+                            Excluir
+                          </button>               
+                      </td>  
+
+                        {/* <td className="py-3 text-center">
                           <button onClick={() => deletar(item.id)} className="rounded bg-despesa/10 px-3 py-1 text-xs font-semibold text-despesa transition hover:bg-despesa hover:text-white">
                             Excluir
                           </button>
-                        </td>
+                        </td> */}
+
                     </tr>
                   ))
                 )}
