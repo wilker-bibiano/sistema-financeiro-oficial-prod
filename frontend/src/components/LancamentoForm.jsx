@@ -5,7 +5,7 @@ import Toast from "./Toast.jsx";
   
 export default function LancamentoForm({ categorias = [], operacoes = [], onSave, loading }) {
   
-const [form, setForm] = useState({ valor: "", operacao: "", categoria: "", observacao: "" });
+const [form, setForm] = useState({ valor: "", operacao: "", categoria: "", observacao: "", comprovante: "" });
   const [errors, setErrors] = useState({});
   const [toast, setToast] = useState(null);
   const isReceita = form.operacao?.toLowerCase().trim() === "receita";
@@ -36,10 +36,11 @@ try {
         valor: Number(form.valor),
         operacao: form.operacao.toLowerCase().trim(),
         categoria: form.categoria,
-        observacao: form.observacao
+        observacao: form.observacao,
+        comprovante: form.comprovante
       });
 
-      setForm({ valor: "", operacao: "", categoria: "", observacao: "" });
+      setForm({ valor: "", operacao: "", categoria: "", observacao: "", comprovante: "" });
       setErrors({});
 
       setToast({ message: "Lançamento salvo com sucesso!", type: "success" });
@@ -129,6 +130,22 @@ try {
             className="min-h-28 resize-y rounded-lg border border-ink/10 px-3 py-3 outline-none transition focus:border-receita focus:ring-2 focus:ring-receita/20"
             placeholder="Detalhes opcionais"
           />
+        </label>
+
+        {/* Comprovante */}
+        <label className="grid gap-2">
+          <span className="text-sm font-semibold text-ink/75">Comprovante</span>
+          <input
+            type="file"
+            onChange={(event) => updateField("comprovante", event.target.files[0])}
+            className="rounded-lg border border-ink/10 bg-white px-3 py-3 outline-none transition focus:border-receita focus:ring-2 focus:ring-receita/20"
+          />
+          <button type="button"
+            onClick={() => updateField("comprovante", "")}
+            className="mt-2 rounded bg-gray-200 px-3 py-1.5 text-sm text-despesa border-none cursor-pointer hover:bg-gray-200 hover:underline"
+          >
+            Remover Comprovante
+          </button>
         </label>
       </div>
 
