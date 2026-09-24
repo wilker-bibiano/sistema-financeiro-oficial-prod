@@ -143,7 +143,7 @@ export default function ExtratoPage() {
                         ${item.operacao === "receita" ? "text-receita" : "text-despesa"}`}>
                         {currency.format(item.valor)}
                       </td>
-                      <td className="py-3 text-center">
+                      <td className="py-3 text-center flex items-center justify-center gap-10" >
                         <button onClick={() => setItemEmEdicao(item)} className="rounded bg-receita/10 px-3 py-1 text-xs font-semibold text-receita transition hover:bg-receita hover:text-white">
                           Editar
                         </button>           
