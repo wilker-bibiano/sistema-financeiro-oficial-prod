@@ -15,10 +15,6 @@ export default function OCRCompLancamentoEmLote({ categorias = [], onSalvarLote,
       const formData = new FormData();
       formData.append("file", file);
 
-      const previewUrl = file.type.startsWith("image/")
-        ? URL.createObjectURL(file)
-        : null;
-
       try {
         const response = await fetch("https://api-java-o922.onrender.com/api/ocr/processar", {
           method: "POST",
@@ -27,10 +23,10 @@ export default function OCRCompLancamentoEmLote({ categorias = [], onSalvarLote,
 
         if (response.ok) {
           const data = await response.json();
+
+          // Retorna apenas os dados extraídos automaticamente
           return {
             tempId: Math.random().toString(),
-            fileRaw: file,
-            previewUrl: previewUrl,
             data: data.data || new Date().toISOString().split("T")[0],
             valor: data.valor !== undefined ? data.valor : 0,
             operacao: data.operacao || "despesa",
@@ -55,29 +51,18 @@ export default function OCRCompLancamentoEmLote({ categorias = [], onSalvarLote,
     event.target.value = "";
   };
 
-  const handleItemChange = (id, campo, valor) => {
-    setItensProcessados((prev) =>
-      prev.map((item) => (item.tempId === id ? { ...item, [campo]: valor } : item))
-    );
-  };
-
   const handleRemover = (id) => {
-    setItensProcessados((prev) => {
-      const itemParaRemover = prev.find((item) => item.tempId === id);
-      if (itemParaRemover?.previewUrl) {
-        URL.revokeObjectURL(itemParaRemover.previewUrl);
-      }
-      return prev.filter((item) => item.tempId !== id);
-    });
+    setItensProcessados((prev) => prev.filter((item) => item.tempId !== id));
   };
 
   const handleSubmit = () => {
     if (itensProcessados.length === 0) return;
-    onSalvarLote(itensProcessados, () => {
-      itensProcessados.forEach((item) => {
-        if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
-      });
-      setItensProcessados([]);
+
+    // Envia apenas os dados limpos para a API persistir no PostgreSQL
+    const dadosParaSalvar = itensProcessados.map(({ tempId, ...resto }) => resto);
+
+    onSalvarLote(dadosParaSalvar, () => {
+      setItensProcessados([]); // Limpa a lista após salvar
     });
   };
 
@@ -87,7 +72,7 @@ export default function OCRCompLancamentoEmLote({ categorias = [], onSalvarLote,
         Importação de Comprovantes por OCR
       </h2>
 
-      {/* Área de Upload Múltiplo */}
+      {/* Área de Upload */}
       <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50 mb-6 hover:bg-gray-100 transition">
         <input
           type="file"
@@ -101,112 +86,64 @@ export default function OCRCompLancamentoEmLote({ categorias = [], onSalvarLote,
         <label htmlFor="file-upload-input" className="cursor-pointer flex flex-col items-center">
           <Upload className="w-10 h-10 text-gray-400 mb-2" />
           <span className="text-sm font-medium text-gray-600">
-            Clique para selecionar vários comprovantes de uma vez
+            Clique para selecionar os comprovantes para leitura
           </span>
-          <span className="text-xs text-gray-400 mt-1">Imagens (PNG, JPG) ou PDF</span>
+          <span className="text-xs text-gray-400 mt-1">Imagens (PNG, JPG) ou PDF — As imagens não serão armazenadas</span>
         </label>
       </div>
 
-      {/* Indicador de Carregamento */}
+      {/* Spinner de Carregamento */}
       {carregandoOcr && (
         <div className="flex items-center justify-center gap-2 my-4 text-blue-600 font-medium">
-          <Loader2 className="animate-spin" /> Processando comprovantes com OCR...
+          <Loader2 className="animate-spin" /> Extraindo dados dos comprovantes...
         </div>
       )}
 
-      {/* Tabela de Prévia */}
+      {/* Tabela de Conferência (Apenas Leitura) */}
       {itensProcessados.length > 0 && (
         <div>
           <h3 className="text-md font-medium text-gray-700 mb-3">
-            Revise os lançamentos antes de salvar ({itensProcessados.length})
+            Confira os dados extraídos automaticamente ({itensProcessados.length})
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b bg-gray-100 text-sm text-gray-600">
-                  <th className="p-3 text-center">Preview</th>
                   <th className="p-3">Data</th>
-                  <th className="p-3">Valor (R$)</th>
                   <th className="p-3">Operação</th>
+                  <th className="p-3">Valor (R$)</th>
                   <th className="p-3">Categoria</th>
                   <th className="p-3">Observação</th>
-                  <th className="p-3 text-center">Ações</th>
+                  <th className="p-3 text-center">Remover</th>
                 </tr>
               </thead>
               <tbody>
                 {itensProcessados.map((item) => (
                   <tr key={item.tempId} className="border-b hover:bg-gray-50 text-sm">
-                    <td className="p-2 text-center">
-                      {item.previewUrl ? (
-                        <a href={item.previewUrl} target="_blank" rel="noopener noreferrer">
-                          <img
-                            src={item.previewUrl}
-                            alt="Prévia"
-                            className="w-10 h-10 object-cover rounded border mx-auto hover:scale-105 transition-transform"
-                          />
-                        </a>
-                      ) : (
-                        <div className="w-10 h-10 flex items-center justify-center bg-gray-100 rounded text-gray-400 mx-auto">
-                          <FileText className="w-5 h-5" />
-                        </div>
-                      )}
+                    <td className="p-3 font-medium text-gray-700">
+                      {item.data ? new Date(item.data + 'T00:00:00').toLocaleDateString('pt-BR') : '-'}
                     </td>
-                    <td className="p-2">
-                      <input
-                        type="date"
-                        value={item.data}
-                        onChange={(e) => handleItemChange(item.tempId, "data", e.target.value)}
-                        className="border rounded p-1"
-                      />
+                    <td className="p-3">
+                      <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                        item.operacao === 'receita' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                      }`}>
+                        {item.operacao.toUpperCase()}
+                      </span>
                     </td>
-                    <td className="p-2">
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={item.valor}
-                        onChange={(e) => handleItemChange(item.tempId, "valor", e.target.value)}
-                        className="border rounded p-1 w-28"
-                      />
+                    <td className="p-3 font-semibold text-gray-800">
+                      R$ {Number(item.valor).toFixed(2)}
                     </td>
-                    <td className="p-2">
-                      <select
-                        value={item.operacao}
-                        onChange={(e) => handleItemChange(item.tempId, "operacao", e.target.value)}
-                        className="border rounded p-1"
-                      >
-                        <option value="despesa">Despesa</option>
-                        <option value="receita">Receita</option>
-                      </select>
+                    <td className="p-3 text-gray-600">
+                      {item.categoria}
                     </td>
-                    <td className="p-2">
-                      <select
-                        value={item.categoria}
-                        onChange={(e) => handleItemChange(item.tempId, "categoria", e.target.value)}
-                        className="border rounded p-1 w-full"
-                      >
-                        {categorias.map((cat, idx) => {
-                          const nomeCat = typeof cat === "string" ? cat : cat.nome;
-                          return (
-                            <option key={idx} value={nomeCat}>
-                              {nomeCat}
-                            </option>
-                          );
-                        })}
-                      </select>
+                    <td className="p-3 text-gray-600">
+                      {item.observacao}
                     </td>
-                    <td className="p-2">
-                      <input
-                        type="text"
-                        value={item.observacao}
-                        onChange={(e) => handleItemChange(item.tempId, "observacao", e.target.value)}
-                        className="border rounded p-1 w-full"
-                      />
-                    </td>
-                    <td className="p-2 text-center">
+                    <td className="p-3 text-center">
                       <button
                         onClick={() => handleRemover(item.tempId)}
                         className="text-red-500 hover:text-red-700 p-1"
-                        title="Remover"
+                        title="Descartar item da lista"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -221,9 +158,9 @@ export default function OCRCompLancamentoEmLote({ categorias = [], onSalvarLote,
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="flex items-center gap-2 bg-red-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-red-600 transition disabled:opacity-50"
+              className="flex items-center gap-2 bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50"
             >
-              <CheckCircle className="w-5 h-5" /> Salvar Todos os Lançamentos
+              <CheckCircle className="w-5 h-5" /> Confirmar e Salvar no Banco
             </button>
           </div>
         </div>
