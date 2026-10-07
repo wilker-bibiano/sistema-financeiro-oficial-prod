@@ -31,16 +31,15 @@ export default function OCRCompLancamentoEmLote({ categorias = [], onSalvarLote,
             tempId: Math.random().toString(),
             fileRaw: file,
             previewUrl: previewUrl,
-            valor: data.valor || 0,
-            observacao: data.recebedor
-              ? `Pago a: ${data.recebedor}`
-              : data.pagador
-              ? `Recebido de: ${data.pagador}`
-              : "Comprovante OCR",
-            categoria: categorias.length > 0 ? (categorias[0].nome || categorias[0]) : "",
-            operacao: "despesa",
+            data: data.data || new Date().toISOString().split("T")[0],
+            valor: data.valor !== undefined ? data.valor : 0,
+            operacao: data.operacao || "despesa",
+            categoria: data.categoria || (categorias.length > 0 ? (categorias[0].nome || categorias[0]) : "Outros"),
+            observacao: data.observacao || "Comprovante OCR",
             ativo: true,
           };
+        } else {
+          console.error("Erro no servidor ao processar arquivo:", file.name);
         }
       } catch (error) {
         console.error("Erro ao processar comprovante:", file.name, error);
@@ -82,7 +81,7 @@ export default function OCRCompLancamentoEmLote({ categorias = [], onSalvarLote,
     });
   };
 
-return (
+  return (
     <div className="p-6 bg-white rounded-lg shadow-md border border-gray-100">
       <h2 className="text-xl font-semibold mb-4 text-gray-800">
         Importação de Comprovantes por OCR
@@ -126,10 +125,11 @@ return (
               <thead>
                 <tr className="border-b bg-gray-100 text-sm text-gray-600">
                   <th className="p-3 text-center">Preview</th>
+                  <th className="p-3">Data</th>
                   <th className="p-3">Valor (R$)</th>
                   <th className="p-3">Operação</th>
                   <th className="p-3">Categoria</th>
-                  <th className="p-3">Observação / Recebedor</th>
+                  <th className="p-3">Observação</th>
                   <th className="p-3 text-center">Ações</th>
                 </tr>
               </thead>
@@ -150,6 +150,14 @@ return (
                           <FileText className="w-5 h-5" />
                         </div>
                       )}
+                    </td>
+                    <td className="p-2">
+                      <input
+                        type="date"
+                        value={item.data}
+                        onChange={(e) => handleItemChange(item.tempId, "data", e.target.value)}
+                        className="border rounded p-1"
+                      />
                     </td>
                     <td className="p-2">
                       <input
