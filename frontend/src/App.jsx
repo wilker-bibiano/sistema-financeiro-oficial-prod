@@ -2,6 +2,7 @@ import { NavLink, Route, Routes } from "react-router-dom";
 import { ArrowLeftRight, Banknote, Home, ReceiptText, WalletCards } from "lucide-react";
 import HomePage from "./pages/HomePage.jsx";
 import LancamentoPage from "./pages/LancamentoPage.jsx";
+import OCRLancamentoEmLote from "./pages/OCRLancamentoEmLote.jsx";
 import ExtratoPage from "./pages/ExtratoPage.jsx";
 
 // Navegação superior da tela
@@ -10,6 +11,7 @@ const navItems = [
   // { to: "/receitas", label: "Receitas", icon: Banknote },
   // { to: "/despesas", label: "Despesas", icon: ReceiptText },
   {to: "/", label: "Lancamentos", icon: Banknote },
+  {to: "/comprovantes", label: "Comprovantes", icon: Banknote },
   { to: "/extrato", label: "Extrato", icon: ArrowLeftRight }
 ];
 
@@ -50,6 +52,7 @@ export default function App() {
           <Routes>
             {/* <Route path="/" element={<HomePage />} /> */}
                <Route path="/" element={<LancamentoPage />} />
+              <Route path="/comprovantes" element={<OCRLancamentoEmLote />} />
             {/* <Route path="/receitas" element={<LancamentoPage  />} /> */}
             {/* <Route path="/despesas" element={<LancamentoPage tipo="despesa" />} /> */}
             <Route path="/extrato" element={<ExtratoPage />} />
