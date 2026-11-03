@@ -1,9 +1,13 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://api-java-o922.onrender.com",
+  // base oficial
+  // baseURL: import.meta.env.VITE_API_URL || "https://api-java-o922.onrender.com",
+  //base local para testes 
+  baseURL: "http://localhost:8080", 
   timeout: 60000 // 60 segundos para suportar o cold start do Render
 });
+
 
 export async function listarCategorias() {
   const { data } = await api.get("/categorias");

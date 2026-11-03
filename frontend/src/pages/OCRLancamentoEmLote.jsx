@@ -8,7 +8,7 @@ export default function OCRLancamentoEmLote() {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
 
-  useEffect(() => {
+  useEffect(() => {   
     carregarCategorias();
   }, []);
 
