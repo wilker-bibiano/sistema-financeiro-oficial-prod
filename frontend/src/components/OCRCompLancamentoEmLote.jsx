@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Upload, Trash2, CheckCircle, Loader2, FileText } from "lucide-react";
+import { api } from "../services/api.js"; // Importa a instância configurada com o localhost:8080
 
 export default function OCRCompLancamentoEmLote({ categorias = [], onSalvarLote, loading }) {
   const [itensProcessados, setItensProcessados] = useState([]);
@@ -13,30 +14,24 @@ export default function OCRCompLancamentoEmLote({ categorias = [], onSalvarLote,
 
     const requisicoes = selectedFiles.map(async (file) => {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("comprovante", file); // Nome exato esperado pelo @RequestParam("comprovante") do Java
 
       try {
-        const response = await fetch("https://api-java-o922.onrender.com/api/ocr/processar", {
-          method: "POST",
-          body: formData,
+        // Usa a instância 'api' (que aponta para http://localhost:8080 localmente)
+        const { data } = await api.post("/api/ocr/processar", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-
-          // Retorna apenas os dados extraídos automaticamente
-          return {
-            tempId: Math.random().toString(),
-            data: data.data || new Date().toISOString().split("T")[0],
-            valor: data.valor !== undefined ? data.valor : 0,
-            operacao: data.operacao || "despesa",
-            categoria: data.categoria || (categorias.length > 0 ? (categorias[0].nome || categorias[0]) : "Outros"),
-            observacao: data.observacao || "Comprovante OCR",
-            ativo: true,
-          };
-        } else {
-          console.error("Erro no servidor ao processar arquivo:", file.name);
-        }
+        // Retorna apenas os dados extraídos automaticamente
+        return {
+          tempId: Math.random().toString(),
+          data: data.data || new Date().toISOString().split("T")[0],
+          valor: data.valor !== undefined ? data.valor : 0,
+          operacao: data.operacao || "despesa",
+          categoria: data.categoria || (categorias.length > 0 ? (categorias[0].nome || categorias[0]) : "Outros"),
+          observacao: data.observacao || "Comprovante OCR",
+          ativo: true,
+        };
       } catch (error) {
         console.error("Erro ao processar comprovante:", file.name, error);
       }

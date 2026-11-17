@@ -4,9 +4,11 @@ export const api = axios.create({
   // base oficial
   // baseURL: import.meta.env.VITE_API_URL || "https://api-java-o922.onrender.com",
   //base local para testes 
-  baseURL: "http://localhost:8080", 
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080", 
   timeout: 60000 // 60 segundos para suportar o cold start do Render
 });
+
+
 
 
 export async function listarCategorias() {
@@ -16,6 +18,16 @@ export async function listarCategorias() {
 
 export async function criarCategoria(nome) {
   const { data } = await api.post("/categorias", { nome });
+  return data;
+}
+
+export async function processarOcr(file) {
+  const formData = new FormData();
+  formData.append("comprovante", file);
+
+  const { data } = await api.post("/api/ocr/processar", formData, {
+    headers: { "Content-Type": "multipart/form-data" }
+  });
   return data;
 }
 
