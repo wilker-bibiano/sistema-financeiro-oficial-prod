@@ -5,7 +5,7 @@ export const api = axios.create({
   // baseURL: import.meta.env.VITE_API_URL || "https://api-java-o922.onrender.com",
   //base local para testes 
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080", 
-  timeout: 60000 // 60 segundos para suportar o cold start do Render
+  timeout: 300000 // 5 minutos para suportar o cold start do Render
 });
 
 
